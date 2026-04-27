@@ -1,0 +1,3935 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/HP/Downloads/dashboard_coal_hauling%20(4).html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Tracking Kecepatan Coal Hauling - JPC</title>
+<script src="./KPI Tracking Kecepatan Coal Hauling - JPC_files/chart.umd.min.js.download"></script>
+<script src="./KPI Tracking Kecepatan Coal Hauling - JPC_files/xlsx.full.min.js.download"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;900&display=swap');
+
+  :root {
+    --bg-dark: #0a0d14;
+    --bg-card: #111827;
+    --bg-card2: #161f30;
+    --orange: #ff6b00;
+    --orange-light: #ff9a3c;
+    --yellow: #ffd100;
+    --green: #00e676;
+    --green2: #69f0ae;
+    --red: #ff3d3d;
+    --text: #e8eaf0;
+    --text-dim: #8899aa;
+    --border: #1e2d42;
+    --accent: #0ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d111c 0%, #111827 50%, #0d1829 100%);
+    border-bottom: 2px solid var(--orange);
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 30px rgba(255,107,0,0.3);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-circle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    overflow: hidden;
+    box-shadow: 0 0 16px rgba(255,107,0,0.6);
+    flex-shrink: 0;
+  }
+  .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+  .header-title {
+    display: flex;
+    flex-direction: column;
+  }
+  .header-title .main { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--orange-light); letter-spacing: 2px; text-transform: uppercase; }
+  .header-title .sub { font-size: 11px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(0,230,118,0.12);
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px; font-weight: 700; color: var(--green);
+    letter-spacing: 2px;
+  }
+  .live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(0.7);} }
+
+  .date-display { font-size: 13px; color: var(--text-dim); font-family: 'Rajdhani', sans-serif; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+  }
+
+  .tab-btn {
+    padding: 14px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-dim);
+    background: none; border: none; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .tab-btn.active {
+    color: var(--orange-light);
+    border-bottom-color: var(--orange);
+  }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    margin: 20px 28px;
+    border: 2px dashed var(--orange);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(255,107,0,0.04);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .upload-zone:hover { background: rgba(255,107,0,0.09); border-color: var(--orange-light); }
+  .upload-zone input { display: none; }
+  .upload-zone .up-icon { font-size: 28px; }
+  .upload-zone .up-text { font-size: 13px; color: var(--text-dim); }
+  .upload-zone .up-text strong { display: block; font-size: 15px; color: var(--orange-light); margin-bottom: 2px; }
+
+  .upload-status { margin: 0 28px 8px; font-size: 13px; color: var(--green); display: none; }
+
+  /* MAIN CONTENT */
+  .content { padding: 0 28px 28px; }
+
+  .slide { display: none; }
+  .slide.active { display: block; }
+
+  /* KPI CARDS */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .kpi-card {
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+    transition: transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+
+  .kpi-card.orange {
+    background: linear-gradient(135deg, #ff6b00 0%, #ff9a3c 100%);
+    border-color: #ff9a3c;
+    box-shadow: 0 8px 28px rgba(255,107,0,0.45);
+  }
+  .kpi-card.yellow {
+    background: linear-gradient(135deg, #f59e0b 0%, #fcd34d 100%);
+    border-color: #fcd34d;
+    box-shadow: 0 8px 28px rgba(245,158,11,0.45);
+  }
+  .kpi-card.green {
+    background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+    border-color: #34d399;
+    box-shadow: 0 8px 28px rgba(5,150,105,0.45);
+  }
+  .kpi-card.red {
+    background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
+    border-color: #f87171;
+    box-shadow: 0 8px 28px rgba(220,38,38,0.45);
+  }
+
+  .kpi-card .kpi-icon { font-size: 22px; margin-bottom: 8px; opacity: 0.9; }
+  .kpi-card .kpi-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .kpi-card .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 42px; font-weight: 700; line-height: 1; }
+  .kpi-card .kpi-unit { font-size: 13px; font-weight: 600; opacity: 0.8; margin-left: 4px; }
+  .kpi-card .kpi-sub { font-size: 11px; opacity: 0.75; margin-top: 6px; }
+
+  /* CHARTS ROW */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .chart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .chart-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 600; color: var(--orange-light); letter-spacing: 1px; text-transform: uppercase; }
+
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* TABLE */
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .table-header-row {
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 600; color: var(--orange-light); letter-spacing: 1px; text-transform: uppercase; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: rgba(255,107,0,0.08);
+    color: var(--orange-light);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(30,45,66,0.6);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,107,0,0.04); }
+  tbody td {
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .badge-green { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid var(--green); }
+  .badge-red { background: rgba(255,61,61,0.15); color: var(--red); border: 1px solid var(--red); }
+  .badge-orange { background: rgba(255,107,0,0.15); color: var(--orange-light); border: 1px solid var(--orange); }
+
+  /* SLIDE 2 - SLICER */
+  .slicer-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    align-items: center;
+  }
+  .slicer-label { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-dim); letter-spacing: 1px; margin-right: 6px; }
+
+  .slicer-btn {
+    padding: 7px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card2);
+    color: var(--text-dim);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .slicer-btn:hover { border-color: var(--orange); color: var(--orange-light); }
+  .slicer-btn.active {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    border-color: var(--orange-light);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255,107,0,0.4);
+  }
+
+  .slide2-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .tall-chart-wrap { position: relative; height: 300px; }
+
+  /* SPEED GAUGE EFFECT */
+  .speed-indicator {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .speed-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .speed-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #00e676, #ffd100, #ff6b00);
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .no-data .icon { font-size: 40px; margin-bottom: 12px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .slide2-charts { grid-template-columns: 1fr; }
+  }
+
+  /* ===== STORAGE BAR ===== */
+  .storage-bar {
+    margin: 0 28px 0;
+    padding: 12px 20px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px solid rgba(255,107,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .storage-info { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .storage-label { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; }
+  .storage-count { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; color:var(--accent); background:rgba(0,255,255,0.08); border:1px solid rgba(0,255,255,0.25); border-radius:6px; padding:2px 10px; }
+  .storage-sessions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .session-chip { display:inline-flex; align-items:center; gap:6px; background:rgba(255,107,0,0.1); border:1px solid rgba(255,107,0,0.3); border-radius:6px; padding:4px 10px; font-size:12px; color:var(--orange-light); cursor:pointer; transition:all 0.2s; }
+  .session-chip:hover { background:rgba(255,107,0,0.2); }
+  .session-chip.active-session { background:linear-gradient(135deg,var(--orange),var(--orange-light)); color:#fff; border-color:var(--orange-light); box-shadow:0 3px 10px rgba(255,107,0,0.4); }
+  .session-chip .chip-del { font-size:13px; font-weight:700; opacity:0.65; cursor:pointer; padding:0 2px; }
+  .session-chip .chip-del:hover { opacity:1; color:var(--red); }
+  .storage-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .btn-st { padding:6px 14px; border-radius:8px; border:1px solid; font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; background:transparent; }
+  .btn-st:disabled { opacity:0.35; cursor:not-allowed; }
+  .btn-st.green  { border-color:var(--green);  color:var(--green);  }
+  .btn-st.green:not(:disabled):hover  { background:rgba(0,230,118,0.15); }
+  .btn-st.yellow { border-color:var(--yellow); color:var(--yellow); }
+  .btn-st.yellow:not(:disabled):hover { background:rgba(255,209,0,0.15); }
+  .btn-st.cyan   { border-color:var(--accent); color:var(--accent); }
+  .btn-st.cyan:not(:disabled):hover   { background:rgba(0,255,255,0.12); }
+  .btn-st.red    { border-color:var(--red);    color:var(--red);    }
+  .btn-st.red:not(:disabled):hover    { background:rgba(255,61,61,0.15); }
+
+  /* Modal */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9990; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--bg-card); border:1px solid var(--orange); border-radius:16px; padding:28px 32px; width:420px; max-width:92vw; box-shadow:0 20px 60px rgba(0,0,0,0.8); }
+  .modal-title { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--orange-light); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+  .modal-sub { font-size:13px; color:var(--text-dim); margin-bottom:14px; }
+  .modal-input { width:100%; background:var(--bg-card2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; padding:10px 14px; outline:none; margin-bottom:16px; box-sizing:border-box; }
+  .modal-input:focus { border-color:var(--orange); }
+  .modal-btns { display:flex; gap:10px; justify-content:flex-end; }
+  .btn-modal-cancel { padding:9px 20px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text-dim); font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+  .btn-modal-ok { padding:9px 20px; border-radius:8px; border:none; background:linear-gradient(135deg,var(--orange),var(--orange-light)); color:#fff; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(255,107,0,0.4); }
+
+  /* Toast */
+  .toast { position:fixed; bottom:28px; right:28px; z-index:9999; padding:12px 20px; border-radius:10px; font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; opacity:0; transform:translateY(20px); transition:all 0.3s; pointer-events:none; max-width:360px; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast.success { background:rgba(0,230,118,0.15); border:1px solid var(--green); color:var(--green); }
+  .toast.error   { background:rgba(255,61,61,0.15);  border:1px solid var(--red);   color:var(--red); }
+  .toast.info    { background:rgba(0,255,255,0.1);   border:1px solid var(--accent); color:var(--accent); }
+
+  /* Del row button */
+  .btn-del-row { background:none; border:1px solid rgba(255,61,61,0.4); border-radius:5px; color:var(--red); font-size:12px; padding:2px 8px; cursor:pointer; transition:all 0.2s; }
+  .btn-del-row:hover { background:rgba(255,61,61,0.15); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-circle">
+      <img src="data:image/jpeg;base64,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" alt="JPC Logo">
+    </div>
+    <div class="header-title">
+      <div class="main">KPI Kecepatan Coal Hauling</div>
+      <div class="sub">PT. JPC — Fleet Speed Monitoring System</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>LIVE DATA</div>
+    <div class="date-display" id="currentDate">Senin, 27 April 2026</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn" onclick="switchTab(0)">📊 Dashboard Utama</button>
+  <button class="tab-btn active" onclick="switchTab(1)">📈 Grafik per Unit</button>
+</div>
+
+<!-- STORAGE BAR -->
+<div class="storage-bar">
+  <div class="storage-info">
+    <span class="storage-label">💾 Sesi Tersimpan:</span>
+    <span class="storage-count" id="storageCount">1</span>
+    <div class="storage-sessions" id="storageSessions"><span class="session-chip" onclick="loadSession(1777255136232)">📁 TRACKING WEEK 1 <span style="opacity:0.6;font-size:11px">[188rec · 27 Apr 09.58]</span><span class="chip-del" onclick="deleteSession(1777255136232, event)" title="Hapus">✕</span></span></div>
+  </div>
+  <div class="storage-actions">
+    <button class="btn-st green" id="btnSave" onclick="openSaveModal()">💾 Simpan Sesi</button>
+    <button class="btn-st yellow" id="btnExport" onclick="doExport()">📤 Export File</button>
+    <button class="btn-st cyan" onclick="document.getElementById(&#39;importFileInput&#39;).click()">📥 Import File</button>
+    <button class="btn-st red" onclick="clearAll()">🗑️ Hapus Semua</button>
+    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="doImport(event)">
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-title">💾 Simpan Sesi Data</div>
+    <p class="modal-sub">Beri nama untuk sesi ini agar mudah dikenali.</p>
+    <input class="modal-input" id="sessionNameInput" type="text" placeholder="Contoh: Periode April W1 2025" maxlength="60">
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-modal-ok" onclick="confirmSave()">✅ Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast error" id="toast">⚠️ Masukkan nama sesi dulu</div>
+
+<!-- UPLOAD -->
+<div class="upload-zone" onclick="document.getElementById(&#39;fileInput&#39;).click()" id="uploadZone">
+  <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFile(event)">
+  <div class="up-icon">📂</div>
+  <div class="up-text">
+    <strong>Upload File Excel Tracking</strong>
+    Klik atau drag &amp; drop file .xlsx hasil export GPS
+  </div>
+</div>
+<div class="upload-status" id="uploadStatus" style="display: block; color: var(--green);">✅ File "TRACKING 26-27 MARET 2026.xlsx" berhasil dimuat — 188 record, 10 unit terdeteksi.</div>
+
+<!-- SLIDE 1: DASHBOARD UTAMA -->
+<div class="content">
+  <div class="slide" id="slide0">
+
+    <div class="kpi-row" id="kpiRow">
+      <div class="kpi-card orange">
+        <div class="kpi-icon">🚛</div>
+        <div class="kpi-label">Total Unit</div>
+        <div class="kpi-value" id="kpiTotalUnit">10</div>
+        <div class="kpi-sub">Unit Coal Hauling</div>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-label">Rata-rata Kecepatan</div>
+        <div class="kpi-value" id="kpiAvgSpeed">53.8<span class="kpi-unit">km/h</span></div>
+        <div class="kpi-sub">Semua unit</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">Kecepatan Maks</div>
+        <div class="kpi-value" id="kpiMaxSpeed">61<span class="kpi-unit">km/h</span></div>
+        <div class="kpi-sub">Tercatat dalam periode</div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-label">Pelanggaran Speed</div>
+        <div class="kpi-value" id="kpiViolations">1</div>
+        <div class="kpi-sub">Melebihi batas 60 km/h</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">🔥 Rata-rata Kecepatan per Unit</div>
+        </div>
+        <div class="chart-wrap"><canvas id="avgSpeedChart" width="981" height="330" style="display: block; box-sizing: border-box; height: 220px; width: 654px;"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">🏆 Top 5 Unit Kecepatan Tertinggi</div>
+        </div>
+        <div class="chart-wrap"><canvas id="topSpeedChart" width="683" height="330" style="display: block; box-sizing: border-box; height: 220px; width: 455px;"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header-row">
+        <div class="table-title">📋 Rekap Data Tracking per Unit</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Unit</th>
+            <th>Nopol</th>
+            <th>Avg Speed</th>
+            <th>Max Speed</th>
+            <th>Min Speed</th>
+            <th>Total Record</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTableBody">
+    <tr>
+      <td>1</td>
+      <td><strong>DT 9017</strong></td>
+      <td>AA341398</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>56.1 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:80%"></div>
+          </div>
+        </div>
+      </td>
+      <td>58 km/h</td>
+      <td>53 km/h</td>
+      <td>19</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>2</td>
+      <td><strong>DT 9003</strong></td>
+      <td>AA336292</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>55.1 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:79%"></div>
+          </div>
+        </div>
+      </td>
+      <td>61 km/h</td>
+      <td>51 km/h</td>
+      <td>16</td>
+      <td><span class="badge badge-red">⚠️ 1 Pelanggaran</span></td>
+    </tr>
+  
+    <tr>
+      <td>3</td>
+      <td><strong>DT 9013</strong></td>
+      <td>AA342220</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>54.7 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:78%"></div>
+          </div>
+        </div>
+      </td>
+      <td>58 km/h</td>
+      <td>51 km/h</td>
+      <td>12</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>4</td>
+      <td><strong>DT 9015</strong></td>
+      <td>AA342239</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>54.4 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:78%"></div>
+          </div>
+        </div>
+      </td>
+      <td>60 km/h</td>
+      <td>51 km/h</td>
+      <td>30</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>5</td>
+      <td><strong>DT 9009</strong></td>
+      <td>AA340824</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>54.3 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:78%"></div>
+          </div>
+        </div>
+      </td>
+      <td>59 km/h</td>
+      <td>51 km/h</td>
+      <td>20</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>6</td>
+      <td><strong>DT 9007</strong></td>
+      <td>AA336273</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>53.2 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:76%"></div>
+          </div>
+        </div>
+      </td>
+      <td>60 km/h</td>
+      <td>51 km/h</td>
+      <td>44</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>7</td>
+      <td><strong>DT 9002</strong></td>
+      <td>AA336284</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>53.1 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:76%"></div>
+          </div>
+        </div>
+      </td>
+      <td>58 km/h</td>
+      <td>51 km/h</td>
+      <td>12</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>8</td>
+      <td><strong>DT 9016</strong></td>
+      <td>AA341388</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>52.7 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:75%"></div>
+          </div>
+        </div>
+      </td>
+      <td>56 km/h</td>
+      <td>51 km/h</td>
+      <td>12</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>9</td>
+      <td><strong>DT 9001</strong></td>
+      <td>AA336232</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>52.3 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:75%"></div>
+          </div>
+        </div>
+      </td>
+      <td>55 km/h</td>
+      <td>51 km/h</td>
+      <td>10</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  
+    <tr>
+      <td>10</td>
+      <td><strong>DT 9011</strong></td>
+      <td>AA340849</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>51.5 km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:74%"></div>
+          </div>
+        </div>
+      </td>
+      <td>53 km/h</td>
+      <td>51 km/h</td>
+      <td>13</td>
+      <td><span class="badge badge-green">✅ Aman</span></td>
+    </tr>
+  </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- SLIDE 2: GRAFIK PER UNIT -->
+  <div class="slide active" id="slide1">
+
+    <div class="slicer-row" id="slicerRow">
+      <span class="slicer-label">🔍 PILIH UNIT :</span>
+      <div id="slicerBtns" style="display:flex;gap:8px;flex-wrap:wrap;"><button class="slicer-btn active">SEMUA</button><button class="slicer-btn">DT 9001</button><button class="slicer-btn">DT 9002</button><button class="slicer-btn">DT 9003</button><button class="slicer-btn">DT 9007</button><button class="slicer-btn">DT 9009</button><button class="slicer-btn">DT 9011</button><button class="slicer-btn">DT 9013</button><button class="slicer-btn">DT 9015</button><button class="slicer-btn">DT 9016</button><button class="slicer-btn">DT 9017</button></div>
+    </div>
+
+    <div class="slide2-charts">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title" id="unitChartTitle">📈 Tren Kecepatan — Semua Unit</div>
+        </div>
+        <div class="tall-chart-wrap"><canvas id="unitTrendChart" style="box-sizing: border-box; display: block; height: 300px; width: 555px;" width="832" height="450"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📊 Distribusi Kecepatan</div>
+        </div>
+        <div class="tall-chart-wrap"><canvas id="unitDistChart" style="box-sizing: border-box; display: block; height: 300px; width: 555px;" width="832" height="450"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header-row">
+        <div class="table-title" id="unitTableTitle">📋 Detail Log — Semua Unit (188 record)</div>
+      </div>
+      <div style="max-height:360px;overflow-y:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Waktu</th>
+              <th>Lokasi / Event</th>
+              <th>Kecepatan</th>
+              <th>Indikator</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="unitTableBody">
+    <tr>
+      <td>1</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:15:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">60 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:60%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(0)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>2</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:15:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">60 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:60%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(1)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>3</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:16:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(2)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>4</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:16:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(3)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>5</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:36:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(4)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>6</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:36:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(5)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>7</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:37:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">59 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:55%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(6)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>8</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:37:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">59 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:55%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(7)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>9</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:38:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(8)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>10</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:38:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(9)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>11</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:38:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(10)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>12</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:38:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(11)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>13</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:40:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(12)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>14</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:40:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(13)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>15</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:41:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(14)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>16</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:41:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(15)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>17</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:42:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(16)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>18</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:42:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(17)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>19</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:47:41</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(18)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>20</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 01:47:41</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(19)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>21</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:16:31</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(20)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>22</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:16:31</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(21)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>23</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:18:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(22)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>24</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:18:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(23)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>25</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:19:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(24)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>26</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:19:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(25)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>27</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:22:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(26)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>28</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:22:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(27)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>29</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:23:19</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(28)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>30</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:23:19</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(29)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>31</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:24:19</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(30)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>32</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:24:19</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(31)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>33</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:24:41</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(32)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>34</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:24:41</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(33)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>35</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:31:07</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(34)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>36</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:31:07</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(35)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>37</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:55:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(36)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>38</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:55:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(37)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>39</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:55:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(38)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>40</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 02:55:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(39)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>41</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:03:41</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(40)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>42</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:03:41</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(41)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>43</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:30:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(42)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>44</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:30:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(43)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>45</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:31:19</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(44)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>46</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:31:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(45)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>47</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:31:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(46)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>48</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:34:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(47)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>49</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:34:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(48)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>50</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:37:00</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(49)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>51</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:37:00</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(50)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>52</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:57:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(51)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>53</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:57:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(52)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>54</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:58:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(53)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>55</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 03:58:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(54)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>56</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:09:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(55)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>57</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:09:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(56)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>58</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:21:51</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(57)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>59</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:21:51</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(58)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>60</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:35:45</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(59)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>61</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:35:45</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(60)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>62</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:35:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(61)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>63</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 04:35:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(62)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>64</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:26:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(63)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>65</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:26:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(64)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>66</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:27:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(65)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>67</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:27:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(66)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>68</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:27:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(67)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>69</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:27:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(68)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>70</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:31:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(69)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>71</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:31:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(70)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>72</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:36:41</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(71)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>73</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 05:36:41</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(72)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>74</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:26:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(73)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>75</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:26:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(74)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>76</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:28:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(75)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>77</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:28:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(76)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>78</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:32:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(77)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>79</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:32:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(78)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>80</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:32:40</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(79)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>81</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:32:40</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(80)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>82</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:33:54</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(81)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>83</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:33:54</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(82)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>84</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:34:54</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(83)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>85</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:34:54</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(84)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>86</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:35:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(85)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>87</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:35:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(86)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>88</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:36:50</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(87)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>89</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:36:50</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(88)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>90</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:37:40</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(89)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>91</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:37:40</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(90)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>92</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:39:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(91)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>93</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:39:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(92)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>94</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:40:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(93)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>95</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:40:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(94)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>96</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:47:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(95)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>97</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:47:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(96)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>98</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:58:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(97)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>99</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 07:58:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(98)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>100</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:08:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(99)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>101</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:08:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(100)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>102</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:12:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(101)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>103</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:12:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(102)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>104</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:46:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(103)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>105</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:46:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(104)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>106</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:47:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(105)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>107</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:47:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(106)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>108</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:58:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(107)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>109</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:58:22</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(108)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>110</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:59:51</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(109)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>111</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 08:59:51</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(110)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>112</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:02:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(111)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>113</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:02:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(112)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>114</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:06:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(113)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>115</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:06:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(114)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>116</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:07:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(115)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>117</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:07:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(116)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>118</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:21:21</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(117)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>119</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:21:21</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(118)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>120</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:25:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(119)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>121</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 09:25:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(120)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>122</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:09:35</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(121)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>123</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:09:35</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(122)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>124</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:10:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(123)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>125</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:10:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(124)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>126</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:12:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">59 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:55%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(125)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>127</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:12:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">59 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:55%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(126)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>128</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:12:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(127)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>129</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 11:12:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(128)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>130</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:08:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(129)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>131</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:08:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(130)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>132</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:09:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(131)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>133</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:09:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(132)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>134</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:46:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(133)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>135</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:46:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(134)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>136</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:56:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(135)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>137</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 13:56:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(136)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>138</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:07:54</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(137)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>139</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:11:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(138)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>140</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:26:45</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(139)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>141</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:28:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(140)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>142</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:31:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(141)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>143</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:41:00</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(142)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>144</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 14:46:01</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(143)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>145</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 15:33:21</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(144)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>146</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 15:45:18</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(145)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>147</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 16:03:40</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(146)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>148</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 16:30:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(147)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>149</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 16:37:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(148)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>150</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 16:38:18</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(149)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>151</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 19:13:54</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(150)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>152</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 19:39:51</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(151)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>153</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 20:23:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(152)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>154</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 20:53:07</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(153)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>155</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 21:49:24</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">60 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:60%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(154)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>156</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 22:13:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(155)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>157</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 22:36:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(156)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>158</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-26 23:14:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(157)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>159</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 01:21:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(158)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>160</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 01:22:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(159)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>161</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 01:26:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(160)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>162</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 01:49:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(161)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>163</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 01:51:46</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(162)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>164</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:01:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(163)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>165</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:16:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(164)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>166</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:20:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 06</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(165)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>167</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:24:55</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(166)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>168</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:43:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(167)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>169</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:50:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(168)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>170</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 02:54:55</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(169)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>171</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 03:16:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(170)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>172</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 03:47:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">54 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:30%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(171)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>173</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 03:47:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 05</td>
+      <td><strong style="color:var(--green)">60 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:60%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(172)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>174</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 03:47:53</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(173)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>175</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 03:48:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--red)">61 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:65%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-red">⚠️ OVER</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(174)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>176</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:00:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(175)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>177</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:14:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(176)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>178</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:23:07</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(177)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>179</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:29:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">57 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:45%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(178)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>180</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:31:22</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(179)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>181</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:45:53</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 02</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(180)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>182</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:54:07</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 03</td>
+      <td><strong style="color:var(--green)">56 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:40%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(181)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>183</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 04:57:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">53 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:25%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(182)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>184</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 05:29:51</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 06</td>
+      <td><strong style="color:var(--green)">52 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:20%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(183)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>185</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 07:28:46</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(184)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>186</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 07:34:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 01</td>
+      <td><strong style="color:var(--green)">51 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:15%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(185)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>187</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 07:44:01</td>
+      <td style="font-size:12px">Arriving Pine Three Hill - 05</td>
+      <td><strong style="color:var(--green)">58 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:50%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(186)">✕ Hapus</button></td>
+    </tr>
+  
+    <tr>
+      <td>188</td>
+      <td style="font-size:12px;color:var(--text-dim)">2026-03-27 08:03:48</td>
+      <td style="font-size:12px">Arriving Area Pos Kutim - 04</td>
+      <td><strong style="color:var(--green)">55 km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:35%"></div>
+        </div>
+      </td>
+      <td><span class="badge badge-green">✅ NORMAL</span></td>
+      <td><button class="btn-del-row" onclick="deleteRecord(187)">✕ Hapus</button></td>
+    </tr>
+  </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let allData = [];
+let unitSummary = [];
+let chartAvg, chartTop, chartTrend, chartDist;
+let selectedUnit = null;
+
+// ===== DATE =====
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+// ===== TABS =====
+function switchTab(i) {
+  document.querySelectorAll('.tab-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+  document.querySelectorAll('.slide').forEach((s, idx) => s.classList.toggle('active', idx === i));
+}
+
+// ===== FILE HANDLER =====
+function handleFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, {type: 'array'});
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
+      parseData(rows, file.name);
+    } catch(err) {
+      showStatus('❌ Gagal membaca file: ' + err.message, 'red');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseData(rows, filename) {
+  allData = [];
+  // Find header row
+  let headerRow = 0;
+  for (let i = 0; i < Math.min(5, rows.length); i++) {
+    if (rows[i] && rows[i][0] && String(rows[i][0]).toLowerCase().includes('vehicle')) {
+      headerRow = i; break;
+    }
+  }
+
+  for (let i = headerRow + 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || !row[0]) continue;
+    const vehicle = String(row[0] || '').trim();
+    if (!vehicle || vehicle === 'Vehicle') continue;
+
+    const unitMatch = vehicle.match(/DT\s*\d+/);
+    const unit = unitMatch ? unitMatch[0].replace(/\s+/, ' ') : vehicle.split('/')[0].trim();
+    const nopol = vehicle.includes('/') ? vehicle.split('/')[1].trim() : '-';
+
+    let rawTime = row[1];
+    let timeStr = '';
+    if (rawTime) {
+      if (typeof rawTime === 'number') {
+        const d = XLSX.SSF.parse_date_code(rawTime);
+        timeStr = `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')} ${String(d.H).padStart(2,'0')}:${String(d.M).padStart(2,'0')}:${String(d.S).padStart(2,'0')}`;
+      } else {
+        timeStr = String(rawTime);
+      }
+    }
+
+    const speed = parseFloat(row[4]) || 0;
+    const event = String(row[2] || '').trim();
+
+    if (speed > 0) {
+      allData.push({ unit, nopol, vehicle, timeStr, speed, event, speeding: speed > 60 });
+    }
+  }
+
+  if (allData.length === 0) {
+    showStatus('⚠️ Tidak ada data kecepatan yang terbaca. Periksa format file.', 'orange');
+    return;
+  }
+
+  buildSummary();
+  updateKPI();
+  renderAvgChart();
+  renderTopChart();
+  buildSlicer();
+  document.getElementById('btnSave').disabled = false;
+  document.getElementById('btnExport').disabled = false;
+  showStatus(`✅ File "${filename}" berhasil dimuat — ${allData.length} record, ${unitSummary.length} unit terdeteksi.`, 'green');
+}
+
+function buildSummary() {
+  const map = {};
+  allData.forEach(d => {
+    if (!map[d.unit]) map[d.unit] = { unit: d.unit, nopol: d.nopol, speeds: [], violations: 0 };
+    map[d.unit].speeds.push(d.speed);
+    if (d.speeding) map[d.unit].violations++;
+  });
+  unitSummary = Object.values(map).map(u => ({
+    unit: u.unit,
+    nopol: u.nopol,
+    avg: (u.speeds.reduce((a,b)=>a+b,0)/u.speeds.length).toFixed(1),
+    max: Math.max(...u.speeds),
+    min: Math.min(...u.speeds),
+    count: u.speeds.length,
+    violations: u.violations
+  })).sort((a,b) => b.avg - a.avg);
+}
+
+function updateKPI() {
+  document.getElementById('kpiTotalUnit').textContent = unitSummary.length;
+
+  const allSpeeds = allData.map(d => d.speed);
+  const avg = (allSpeeds.reduce((a,b)=>a+b,0)/allSpeeds.length).toFixed(1);
+  document.getElementById('kpiAvgSpeed').innerHTML = `${avg}<span class="kpi-unit">km/h</span>`;
+
+  const maxSpeed = Math.max(...allSpeeds);
+  document.getElementById('kpiMaxSpeed').innerHTML = `${maxSpeed}<span class="kpi-unit">km/h</span>`;
+
+  const violations = allData.filter(d=>d.speeding).length;
+  document.getElementById('kpiViolations').textContent = violations;
+
+  // Table
+  const tbody = document.getElementById('summaryTableBody');
+  tbody.innerHTML = unitSummary.map((u,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${u.unit}</strong></td>
+      <td>${u.nopol}</td>
+      <td>
+        <div class="speed-indicator">
+          <strong>${u.avg} km/h</strong>
+          <div class="speed-bar-bg" style="width:80px">
+            <div class="speed-bar-fill" style="width:${(u.avg/70*100).toFixed(0)}%"></div>
+          </div>
+        </div>
+      </td>
+      <td>${u.max} km/h</td>
+      <td>${u.min} km/h</td>
+      <td>${u.count}</td>
+      <td>${u.violations > 0 ? `<span class="badge badge-red">⚠️ ${u.violations} Pelanggaran</span>` : '<span class="badge badge-green">✅ Aman</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+// ===== CHART GRADIENT HELPER =====
+function makeGradient(ctx, colors) {
+  const grad = ctx.createLinearGradient(0, 0, 0, 300);
+  colors.forEach((c,i) => grad.addColorStop(i/(colors.length-1), c));
+  return grad;
+}
+
+function renderAvgChart() {
+  if (chartAvg) chartAvg.destroy();
+  const labels = unitSummary.map(u => u.unit);
+  const vals = unitSummary.map(u => parseFloat(u.avg));
+  const ctx = document.getElementById('avgSpeedChart').getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,220);
+  grad.addColorStop(0, 'rgba(255,154,60,0.9)');
+  grad.addColorStop(0.5, 'rgba(255,209,0,0.7)');
+  grad.addColorStop(1, 'rgba(0,230,118,0.5)');
+  chartAvg = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Avg Speed (km/h)',
+        data: vals,
+        backgroundColor: grad,
+        borderColor: 'rgba(255,154,60,1)',
+        borderWidth: 1.5,
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8899aa', font: {size:11} }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: {
+          ticks: { color: '#8899aa', font:{size:11} },
+          grid: { color: 'rgba(255,255,255,0.06)' },
+          min: 48, suggestedMax: 65
+        }
+      }
+    }
+  });
+}
+
+function renderTopChart() {
+  if (chartTop) chartTop.destroy();
+  const top5 = [...unitSummary].sort((a,b)=>b.max-a.max).slice(0,5);
+  const ctx = document.getElementById('topSpeedChart').getContext('2d');
+  const colors = ['rgba(255,61,61,0.9)','rgba(255,107,0,0.85)','rgba(255,154,60,0.8)','rgba(255,209,0,0.75)','rgba(0,230,118,0.7)'];
+  chartTop = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: top5.map(u=>u.unit),
+      datasets: [{
+        label: 'Max Speed (km/h)',
+        data: top5.map(u=>u.max),
+        backgroundColor: colors,
+        borderColor: colors.map(c=>c.replace('0.','1)').replace(/,[^,]+\)$/,')')),
+        borderWidth: 1.5,
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} km/h` } }
+      },
+      scales: {
+        x: { ticks: { color: '#8899aa', font:{size:11} }, grid: { color: 'rgba(255,255,255,0.06)' }, min: 48 },
+        y: { ticks: { color: '#e8eaf0', font:{size:12,weight:'600'} }, grid: { display:false } }
+      }
+    }
+  });
+}
+
+// ===== SLICER =====
+function buildSlicer() {
+  const units = [...new Set(allData.map(d=>d.unit))].sort();
+  const container = document.getElementById('slicerBtns');
+  container.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'slicer-btn active';
+  allBtn.textContent = 'SEMUA';
+  allBtn.onclick = () => selectUnit(null);
+  container.appendChild(allBtn);
+  units.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'slicer-btn';
+    btn.textContent = u;
+    btn.onclick = () => selectUnit(u);
+    container.appendChild(btn);
+  });
+  selectUnit(units[0]);
+}
+
+function selectUnit(unit) {
+  selectedUnit = unit;
+  document.querySelectorAll('.slicer-btn').forEach(b => {
+    b.classList.toggle('active', 
+      (unit === null && b.textContent === 'SEMUA') || b.textContent === unit
+    );
+  });
+  renderUnitCharts(unit);
+  renderUnitTable(unit);
+}
+
+function renderUnitCharts(unit) {
+  const filtered = unit ? allData.filter(d=>d.unit===unit) : allData;
+  document.getElementById('unitChartTitle').textContent = `📈 Tren Kecepatan — ${unit || 'Semua Unit'}`;
+
+  // Trend chart
+  if (chartTrend) chartTrend.destroy();
+  const ctx1 = document.getElementById('unitTrendChart').getContext('2d');
+  const grad1 = ctx1.createLinearGradient(0,0,0,300);
+  grad1.addColorStop(0,'rgba(255,154,60,0.5)');
+  grad1.addColorStop(1,'rgba(255,154,60,0.02)');
+
+  chartTrend = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: filtered.map((d,i)=>i+1),
+      datasets: [{
+        label: 'Kecepatan (km/h)',
+        data: filtered.map(d=>d.speed),
+        borderColor: '#ff9a3c',
+        borderWidth: 2.5,
+        backgroundColor: grad1,
+        fill: true,
+        pointRadius: filtered.length > 40 ? 0 : 4,
+        pointBackgroundColor: filtered.map(d=>d.speeding?'#ff3d3d':'#00e676'),
+        tension: 0.35,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{ callbacks:{ label: c=>`${c.raw} km/h`, title: c=>`Record #${c[0].label}` } }
+      },
+      scales: {
+        x: { ticks:{color:'#8899aa',font:{size:10}}, grid:{color:'rgba(255,255,255,0.04)'}, title:{display:true,text:'Record #',color:'#8899aa'} },
+        y: { ticks:{color:'#8899aa',font:{size:11}}, grid:{color:'rgba(255,255,255,0.06)'}, min:48, suggestedMax:65,
+          title:{display:true,text:'km/h',color:'#8899aa'} }
+      }
+    }
+  });
+
+  // Distribution chart
+  if (chartDist) chartDist.destroy();
+  const speeds = filtered.map(d=>d.speed);
+  const bins = {};
+  speeds.forEach(s => {
+    const k = Math.floor(s);
+    bins[k] = (bins[k]||0)+1;
+  });
+  const binKeys = Object.keys(bins).sort((a,b)=>a-b);
+  const ctx2 = document.getElementById('unitDistChart').getContext('2d');
+  const grad2 = ctx2.createLinearGradient(0,0,0,300);
+  grad2.addColorStop(0,'rgba(105,240,174,0.9)');
+  grad2.addColorStop(0.5,'rgba(255,209,0,0.7)');
+  grad2.addColorStop(1,'rgba(255,61,61,0.5)');
+  chartDist = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: binKeys.map(k=>k+' km/h'),
+      datasets: [{
+        label: 'Frekuensi',
+        data: binKeys.map(k=>bins[k]),
+        backgroundColor: grad2,
+        borderRadius: 6,
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ticks:{color:'#8899aa',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#8899aa',font:{size:11}},grid:{color:'rgba(255,255,255,0.06)'},title:{display:true,text:'Frekuensi',color:'#8899aa'}}
+      }
+    }
+  });
+}
+
+function renderUnitTable(unit) {
+  const filtered = unit ? allData.filter(d=>d.unit===unit) : allData;
+  document.getElementById('unitTableTitle').textContent = `📋 Detail Log — ${unit || 'Semua Unit'} (${filtered.length} record)`;
+  const tbody = document.getElementById('unitTableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data">Tidak ada data</td></tr>';
+    return;
+  }
+  const pct = s => Math.min(100, ((s - 48) / 20 * 100)).toFixed(0);
+  tbody.innerHTML = filtered.map((d,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td style="font-size:12px;color:var(--text-dim)">${d.timeStr}</td>
+      <td style="font-size:12px">${d.event}</td>
+      <td><strong style="color:${d.speeding?'var(--red)':'var(--green)'}">${d.speed} km/h</strong></td>
+      <td>
+        <div class="speed-bar-bg" style="width:100px;height:8px">
+          <div class="speed-bar-fill" style="width:${pct(d.speed)}%"></div>
+        </div>
+      </td>
+      <td>${d.speeding?'<span class="badge badge-red">⚠️ OVER</span>':'<span class="badge badge-green">✅ NORMAL</span>'}</td>
+      <td><button class="btn-del-row" onclick="deleteRecord(${allData.indexOf(d)})">✕ Hapus</button></td>
+    </tr>
+  `).join('');
+}
+
+function deleteRecord(idx) {
+  if (!confirm('Hapus record ini dari data aktif?')) return;
+  allData.splice(idx, 1);
+  buildSummary();
+  updateKPI();
+  renderAvgChart();
+  renderTopChart();
+  renderUnitCharts(selectedUnit);
+  renderUnitTable(selectedUnit);
+  showToast('🗑️ Record dihapus', 'error');
+}
+
+// ===== SHOW STATUS =====
+function showStatus(msg, color) {
+  const el = document.getElementById('uploadStatus');
+  el.style.display = 'block';
+  el.style.color = color === 'green' ? 'var(--green)' : color === 'red' ? 'var(--red)' : 'var(--orange-light)';
+  el.textContent = msg;
+}
+
+// ===== LOCALSTORAGE =====
+const LS_KEY = 'jpc_coal_sessions';
+
+function getSessions() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch(e) { return []; }
+}
+
+function saveSessions(arr) {
+  localStorage.setItem(LS_KEY, JSON.stringify(arr));
+}
+
+function openSaveModal() {
+  document.getElementById('sessionNameInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('sessionNameInput').focus(), 80);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function confirmSave() {
+  const name = document.getElementById('sessionNameInput').value.trim();
+  if (!name) { showToast('⚠️ Masukkan nama sesi dulu', 'error'); return; }
+  const sessions = getSessions();
+  const sesi = { id: Date.now(), name, savedAt: Date.now(), recordCount: allData.length, unitCount: unitSummary.length, allData: allData, unitSummary: unitSummary };
+  sessions.unshift(sesi);
+  saveSessions(sessions);
+  closeModal();
+  renderChips();
+  showToast('✅ Sesi "' + name + '" tersimpan (' + allData.length + ' record)', 'success');
+}
+
+function loadSession(id) {
+  const sessions = getSessions();
+  const sesi = sessions.find(s => s.id === id);
+  if (!sesi) return;
+  allData = sesi.allData;
+  unitSummary = sesi.unitSummary;
+  updateKPI();
+  renderAvgChart();
+  renderTopChart();
+  buildSlicer();
+  renderChips();
+  showStatus('📂 Loaded sesi "' + sesi.name + '" — ' + allData.length + ' record', 'green');
+  document.getElementById('btnSave').disabled = false;
+  document.getElementById('btnExport').disabled = false;
+  showToast('📂 Sesi "' + sesi.name + '" dimuat', 'info');
+}
+
+function deleteSession(id, ev) {
+  ev.stopPropagation();
+  const sessions = getSessions();
+  const sesi = sessions.find(s => s.id === id);
+  if (!confirm('Hapus sesi "' + (sesi ? sesi.name : '') + '"?')) return;
+  saveSessions(sessions.filter(s => s.id !== id));
+  renderChips();
+  showToast('🗑️ Sesi dihapus', 'error');
+}
+
+function clearAll() {
+  const sessions = getSessions();
+  if (!sessions.length) { showToast('Tidak ada sesi tersimpan', 'info'); return; }
+  if (!confirm('Hapus semua ' + sessions.length + ' sesi tersimpan?')) return;
+  localStorage.removeItem(LS_KEY);
+  renderChips();
+  showToast('🗑️ Semua sesi dihapus', 'error');
+}
+
+function renderChips() {
+  const sessions = getSessions();
+  document.getElementById('storageCount').textContent = sessions.length;
+  const cont = document.getElementById('storageSessions');
+  if (!sessions.length) {
+    cont.innerHTML = '<span style="font-size:12px;color:var(--text-dim)">Belum ada data tersimpan</span>';
+    return;
+  }
+  cont.innerHTML = sessions.map(s => {
+    const d = new Date(s.savedAt);
+    const tgl = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    return '<span class="session-chip" onclick="loadSession(' + s.id + ')">'
+      + '📁 ' + s.name + ' <span style="opacity:0.6;font-size:11px">[' + s.recordCount + 'rec · ' + tgl + ']</span>'
+      + '<span class="chip-del" onclick="deleteSession(' + s.id + ', event)" title="Hapus">✕</span>'
+      + '</span>';
+  }).join('');
+}
+
+// ===== EXPORT to JSON file =====
+function doExport() {
+  const sessions = getSessions();
+  if (!sessions.length) { showToast('⚠️ Tidak ada sesi untuk diekspor', 'error'); return; }
+  const json = JSON.stringify(sessions, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const now = new Date();
+  const stamp = now.getFullYear() + pad2(now.getMonth()+1) + pad2(now.getDate()) + '_' + pad2(now.getHours()) + pad2(now.getMinutes());
+  a.download = 'coal_data_' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('📤 ' + sessions.length + ' sesi diekspor ke file JSON', 'success');
+}
+
+function pad2(n) { return String(n).padStart(2,'0'); }
+
+// ===== IMPORT from JSON file =====
+function doImport(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const arr = Array.isArray(data) ? data : [data];
+      const existing = getSessions();
+      const existingIds = new Set(existing.map(s => s.id));
+      let added = 0;
+      arr.forEach(s => {
+        if (s.allData && s.name && !existingIds.has(s.id)) {
+          existing.unshift(s);
+          added++;
+        }
+      });
+      saveSessions(existing);
+      renderChips();
+      showToast('✅ ' + added + ' sesi berhasil diimport', 'success');
+    } catch(err) {
+      showToast('❌ File tidak valid atau bukan format JSON yang benar', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ===== TOAST =====
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type||'info') + ' show';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ===== MODAL close on backdrop =====
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('sessionNameInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') confirmSave();
+});
+
+// Init
+renderChips();
+
+// Drag & drop
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.background='rgba(255,107,0,0.14)'; });
+zone.addEventListener('dragleave', () => zone.style.background='');
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.style.background='';
+  const f = e.dataTransfer.files[0];
+  if (f) { document.getElementById('fileInput').files = e.dataTransfer.files; handleFile({target:{files:e.dataTransfer.files}}); }
+});
+</script>
+
+
+</body></html>
