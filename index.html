@@ -1792,56 +1792,15 @@ async function generateAISummary() {
     const topUnits = [...unitSummary].sort((a,b) => b.violations - a.violations).slice(0, 5);
     const unitLines = topUnits.map(u => `- ${u.unit} (${u.nopol}): ${u.violations}x over speed, avg ${u.avg} km/h, max ${u.max} km/h`).join('\n');
 
-    const prompt = `Kamu adalah analis keselamatan armada profesional untuk perusahaan tambang batubara PT JPC.
+    // ===== ANALISIS LOKAL — tidak butuh API / internet =====
+    await new Promise(r => setTimeout(r, 800)); // simulasi loading
 
-DATA ARMADA COAL HAULING:
-- Total unit: ${unitSummary.length}
-- Total record: ${allData.length}
-- Batas kecepatan: 60 km/h
-- Over Speed (>60 km/h): ${totalOS} kejadian (${pctOS}%)
-- Waspada (50-60 km/h): ${totalW} kejadian
-- Normal: ${totalN} kejadian
-- Rata-rata kecepatan: ${avgSpd} km/h
-- Kecepatan tertinggi: ${maxSpd} km/h
-- Top 5 unit over speed:
-${unitLines}
-
-Buat laporan analisis keselamatan dengan format PERSIS sebagai berikut (gunakan header [RINGKASAN], [REKOMENDASI], [KESIMPULAN]):
-
-[RINGKASAN]
-Tulis 3-4 kalimat ringkasan eksekutif tentang kondisi armada, tingkat kepatuhan, dan risiko utama.
-
-[REKOMENDASI]
-1. TINGGI | Judul rekomendasi pertama | Penjelasan detail langkah konkret yang harus diambil segera.
-2. TINGGI | Judul rekomendasi kedua | Penjelasan detail langkah konkret yang harus diambil segera.
-3. SEDANG | Judul rekomendasi ketiga | Penjelasan detail langkah yang perlu dilakukan dalam waktu dekat.
-4. SEDANG | Judul rekomendasi keempat | Penjelasan detail langkah yang perlu dilakukan dalam waktu dekat.
-5. RENDAH | Judul rekomendasi kelima | Penjelasan detail langkah perbaikan jangka panjang.
-
-[KESIMPULAN]
-Tulis 2-3 kalimat kesimpulan dan tindak lanjut yang harus segera dilakukan manajemen.
-
-Gunakan bahasa Indonesia profesional. Jangan tambahkan teks lain di luar format di atas.`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: prompt }]
-      })
+    const rawText = generateLocalAnalysis({
+      totalUnit: unitSummary.length,
+      totalRecord: allData.length,
+      totalOS, totalW, totalN, pctOS,
+      avgSpd, maxSpd, topUnits, unitLines
     });
-
-    if (!response.ok) {
-      const errBody = await response.text();
-      throw new Error('HTTP ' + response.status + ': ' + errBody.slice(0, 120));
-    }
-
-    const data    = await response.json();
-    const rawText = (data.content || []).map(c => c.text || '').join('').trim();
-
-    if (!rawText) throw new Error('Respons AI kosong');
 
     clearInterval(loadInt);
     renderAIOutputFromText(rawText, topUnits);
@@ -1943,6 +1902,93 @@ function renderAIOutputFromText(rawText, topUnits) {
   showToast('✅ Analisis AI berhasil dibuat!', 'success');
 }
 
+function generateLocalAnalysis({ totalUnit, totalRecord, totalOS, totalW, totalN, pctOS, avgSpd, maxSpd, topUnits }) {
+  const pct     = parseFloat(pctOS);
+  const avg     = parseFloat(avgSpd);
+  const max     = parseFloat(maxSpd);
+  const topUnit = topUnits[0];
+
+  // ── Ringkasan dinamis ──
+  let tingkatRisiko, kondisi, urgensi;
+  if (pct >= 30)      { tingkatRisiko = 'SANGAT TINGGI'; kondisi = 'kritis dan memerlukan tindakan segera'; urgensi = 'darurat'; }
+  else if (pct >= 15) { tingkatRisiko = 'TINGGI';        kondisi = 'mengkhawatirkan dan perlu perhatian serius'; urgensi = 'mendesak'; }
+  else if (pct >= 5)  { tingkatRisiko = 'SEDANG';        kondisi = 'perlu pemantauan lebih ketat'; urgensi = 'perlu ditangani'; }
+  else                { tingkatRisiko = 'RENDAH';         kondisi = 'relatif terkendali namun tetap perlu pengawasan'; urgensi = 'perlu dipantau'; }
+
+  const topViolators = topUnits.filter(u => u.violations > 0);
+  const unitBerisiko = topViolators.length;
+  const worseUnit    = topUnit && topUnit.violations > 0 ? `Unit ${topUnit.unit} menjadi unit paling bermasalah dengan ${topUnit.violations} kejadian over speed dan kecepatan maksimum ${topUnit.max} km/h.` : '';
+
+  const ringkasan = `Berdasarkan analisis terhadap ${totalRecord} record dari ${totalUnit} unit armada Coal Hauling PT JPC, tingkat risiko keselamatan berada pada level ${tingkatRisiko}. Tercatat ${totalOS} kejadian over speed (${pctOS}% dari total data) dengan kecepatan rata-rata armada ${avgSpd} km/h dan kecepatan tertinggi ${maxSpd} km/h — melampaui batas aman 60 km/h. ${worseUnit} Kondisi ini ${kondisi} dan membutuhkan intervensi ${urgensi} dari pihak manajemen dan HSE.`;
+
+  // ── Rekomendasi dinamis berdasarkan data ──
+  const rekoms = [];
+
+  // Rekomendasi 1 — selalu ada (over speed tertinggi)
+  if (topUnit && topUnit.violations > 0) {
+    rekoms.push({ prio: 'TINGGI', judul: `Penindakan Langsung Unit ${topUnit.unit}`,
+      detail: `Unit ${topUnit.unit} (${topUnit.nopol}) mencatatkan ${topUnit.violations} kejadian over speed dengan kecepatan maksimum ${topUnit.max} km/h. Lakukan pemanggilan pengemudi, evaluasi SIM & rekam jejak pelanggaran, serta pasang governor/speed limiter pada unit ini sebagai prioritas utama.` });
+  } else {
+    rekoms.push({ prio: 'TINGGI', judul: 'Penguatan Sistem Monitoring Kecepatan Real-time',
+      detail: `Meskipun pelanggaran rendah, pastikan sistem GPS tracking dan speed alert aktif 100% pada seluruh ${totalUnit} unit. Lakukan audit sistem monitoring setiap minggu untuk mencegah potensi pelanggaran yang tidak terpantau.` });
+  }
+
+  // Rekomendasi 2 — berdasarkan pct over speed
+  if (pct >= 15) {
+    rekoms.push({ prio: 'TINGGI', judul: 'Sidang Keselamatan & Sanksi Tegas',
+      detail: `Tingkat over speed ${pctOS}% sangat tinggi. Segera adakan sidang keselamatan wajib seluruh pengemudi, terapkan sistem demerit poin: pelanggaran pertama = SP1, kedua = SP2 + pelatihan ulang, ketiga = pemberhentian sementara dari operasional hauling.` });
+  } else if (pct >= 5) {
+    rekoms.push({ prio: 'TINGGI', judul: 'Safety Briefing & Refreshment Training Pengemudi',
+      detail: `Dengan ${totalOS} kejadian over speed, lakukan safety briefing harian selama 2 minggu ke depan setiap sebelum shift. Khususkan refreshment training defensive driving bagi ${unitBerisiko} unit yang tercatat melakukan pelanggaran.` });
+  } else {
+    rekoms.push({ prio: 'SEDANG', judul: 'Program Reward Kepatuhan Kecepatan',
+      detail: `Pertahankan tingkat kepatuhan yang baik dengan program reward bulanan untuk pengemudi dan unit yang zero violation. Ini akan memotivasi pengemudi lain untuk menjaga kecepatan dalam batas aman secara konsisten.` });
+  }
+
+  // Rekomendasi 3 — berdasarkan avg speed
+  if (avg > 55) {
+    rekoms.push({ prio: 'SEDANG', judul: 'Evaluasi & Penurunan Target Kecepatan Operasional',
+      detail: `Rata-rata kecepatan armada ${avgSpd} km/h mendekati batas maksimum 60 km/h. Tinjau ulang jadwal hauling dan target tonase — kemungkinan pengemudi memacu kendaraan karena tekanan target produksi. Koordinasikan dengan dispatcher untuk penjadwalan yang realistis.` });
+  } else {
+    rekoms.push({ prio: 'SEDANG', judul: 'Pemasangan Rambu Kecepatan & Marka Jalan Tambahan',
+      detail: `Pasang rambu batas kecepatan tambahan pada titik-titik rawan di jalur hauling, terutama di tikungan, turunan, dan area crossing. Tambahkan speed bump pada zona kritis untuk memaksa perlambatan secara fisik.` });
+  }
+
+  // Rekomendasi 4 — berdasarkan max speed
+  if (max > 70) {
+    rekoms.push({ prio: 'SEDANG', judul: `Investigasi Insiden Kecepatan Ekstrem (${maxSpd} km/h)`,
+      detail: `Kecepatan tertinggi ${maxSpd} km/h adalah ${(max-60).toFixed(0)} km/h di atas batas — sangat berbahaya pada kendaraan berat. Investigasi waktu, lokasi, dan pengemudi pada kejadian ini. Periksa kondisi rem dan ban unit terkait, serta pastikan tidak ada kerusakan tersembunyi.` });
+  } else {
+    rekoms.push({ prio: 'SEDANG', judul: 'Audit Kelayakan Teknis Kendaraan Berkala',
+      detail: `Lakukan inspeksi teknis menyeluruh meliputi sistem pengereman, tekanan ban, dan kondisi suspensi pada seluruh ${totalUnit} unit setiap bulan. Kendaraan dengan kondisi teknis prima lebih mampu dikendalikan pada kecepatan tinggi dan mengurangi risiko kecelakaan.` });
+  }
+
+  // Rekomendasi 5 — jangka panjang
+  if (totalW > totalOS) {
+    rekoms.push({ prio: 'RENDAH', judul: 'Sistem Peringatan Dini (Early Warning) Kecepatan Waspada',
+      detail: `Terdapat ${totalW} kejadian waspada (50-60 km/h) yang berpotensi berkembang menjadi over speed. Implementasikan sistem buzzer/alarm otomatis di kabin yang berbunyi saat kecepatan melewati 50 km/h sebagai peringatan dini kepada pengemudi sebelum memasuki zona berbahaya.` });
+  } else {
+    rekoms.push({ prio: 'RENDAH', judul: 'Implementasi Telematics & Dashboard HSE Digital',
+      detail: `Integrasikan data GPS tracking dengan sistem dashboard HSE real-time yang dapat diakses manajemen kapan saja. Fitur geofencing otomatis dan laporan harian per unit akan memudahkan pengawasan tanpa perlu pemantauan manual, meningkatkan efisiensi tim safety secara signifikan.` });
+  }
+
+  // ── Kesimpulan ──
+  const aksi = pct >= 15
+    ? `Manajemen harus mengambil tindakan darurat dalam 24–48 jam ke depan dengan mengadakan rapat HSE, menginstruksikan penindakan terhadap ${unitBerisiko} unit bermasalah, dan memastikan sistem speed limiter terpasang sebelum operasional berikutnya.`
+    : pct >= 5
+    ? `Manajemen perlu menjadwalkan rapat HSE dalam minggu ini, menetapkan target penurunan angka over speed sebesar 50% dalam 30 hari ke depan, dan melaporkan perkembangan kepada direksi setiap dua minggu.`
+    : `Pertahankan kinerja keselamatan yang baik ini dengan konsistensi program monitoring, reward system, dan audit berkala agar angka kepatuhan terus meningkat menuju zero violation.`;
+
+  const kesimpulan = `Data armada periode ini menunjukkan bahwa ${totalOS} dari ${totalRecord} record (${pctOS}%) melanggar batas kecepatan 60 km/h — sebuah risiko keselamatan yang tidak dapat diabaikan mengingat beban muatan dan kondisi jalan tambang. ${aksi} Komitmen bersama antara manajemen, dispatcher, dan pengemudi adalah kunci utama dalam mewujudkan operasional Coal Hauling yang aman dan produktif.`;
+
+  // ── Susun teks output ──
+  const rekomLines = rekoms.map((r, i) => `${i+1}. ${r.prio} | ${r.judul} | ${r.detail}`).join('\n');
+
+  return `[RINGKASAN]\n${ringkasan}\n\n[REKOMENDASI]\n${rekomLines}\n\n[KESIMPULAN]\n${kesimpulan}`;
+}
+
+// ===== END AI SUMMARY =====
+
 function extractSection(text, startKey, endKey) {
   const startTag = '[' + startKey + ']';
   const si = text.indexOf(startTag);
@@ -1955,8 +2001,6 @@ function extractSection(text, startKey, endKey) {
   }
   return content.trim();
 }
-
-// ===== END AI SUMMARY =====
 
 
 function showStatus(msg, color) {
